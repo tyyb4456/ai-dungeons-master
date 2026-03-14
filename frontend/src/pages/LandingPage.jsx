@@ -1,267 +1,466 @@
+import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Sword, Skull, BookOpen, Scroll, ChevronRight, Sparkles } from 'lucide-react';
+import { Swords, ScrollText, TrendingUp } from "lucide-react";
 
-function LandingPage() {
+const FEATURES = [
+  {
+    num: "01",
+    icon: Swords,
+    title: "Dynamic Combat",
+    desc: "Turn-based battles against intelligent AI enemies. Each encounter adapts to your playstyle — no two fights are ever the same.",
+  },
+  {
+    num: "02",
+    icon: ScrollText,
+    title: "Living Narrative",
+    desc: "Your choices reshape the world. The AI crafts a branching story in real-time — consequences are real, alliances are fragile.",
+  },
+  {
+    num: "03",
+    icon: TrendingUp,
+    title: "Character Growth",
+    desc: "Level up, unlock abilities, and forge your identity through gear, skills, and decisions that permanently mark your legend.",
+  },
+];
+
+const TICKER_ITEMS = [
+  'Dynamic Combat', 'Living Narrative', '100+ Enemies',
+  'AI Dungeon Master', 'Forge Your Legend', 'Infinite Stories',
+];
+
+const MARQUEE_ITEMS = [
+  'Powered by Claude AI', 'Real-time narrative', 'Infinite replayability',
+  'Dynamic world-building', 'Turn-based combat', 'Character progression',
+];
+
+export default function LandingPage() {
+  const scanRef = useRef(null);
+
   return (
-    <div className="min-h-screen bg-linear-to-b from-black via-slate-950 to-purple-950 text-white overflow-hidden relative">
-      
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-96 h-96 bg-purple-600 rounded-full opacity-10 blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-red-600 rounded-full opacity-10 blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-150 h-150 bg-blue-600 rounded-full opacity-5 blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
-      </div>
+    <div style={{ background: '#000F08', color: '#E8E0D0', fontFamily: "'Space Mono', monospace", overflowX: 'hidden', minHeight: '100vh' }}>
 
-      {/* Floating Particles */}
-      {[...Array(20)].map((_, i) => (
-        <motion.div
-          key={i}
-          className="absolute w-1 h-1 bg-purple-400 rounded-full opacity-30"
-          initial={{ 
-            x: Math.random() * window.innerWidth, 
-            y: Math.random() * window.innerHeight 
-          }}
-          animate={{ 
-            y: [null, Math.random() * window.innerHeight],
-            x: [null, Math.random() * window.innerWidth],
-            opacity: [0.3, 0.6, 0.3]
-          }}
-          transition={{ 
-            duration: Math.random() * 10 + 10, 
-            repeat: Infinity,
-            ease: "linear"
-          }}
-        />
-      ))}
+      {/* Google Fonts */}
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
 
-      <div className="relative z-10 min-h-screen flex flex-col">
-        
-        {/* Navigation */}
-        <motion.nav 
-          initial={{ y: -100, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.8 }}
-          className="p-6 flex justify-between items-center border-b border-purple-900/30 backdrop-blur-sm"
-        >
-          <div className="flex items-center gap-3">
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-            >
-              <Sparkles className="text-purple-400" size={32} />
-            </motion.div>
-            <h1 className="text-2xl font-bold bg-linear-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent tracking-tight">
-              AI Dungeon Master
-            </h1>
-          </div>
-          
-          <div className="hidden md:flex gap-6 items-center">
-            <a href="#features" className="text-gray-300 hover:text-purple-400 transition text-sm">Features</a>
-            <a href="#about" className="text-gray-300 hover:text-purple-400 transition text-sm">About</a>
-            <Link 
-              to="/create-character" 
-              className="bg-purple-600 hover:bg-purple-700 px-6 py-2 rounded-full transition font-semibold text-sm"
-            >
-              Start Adventure
+        :root {
+          --night: #000F08;
+          --imperial: #FB3640;
+          --imperial-dim: rgba(251,54,64,0.12);
+          --imperial-glow: rgba(251,54,64,0.4);
+          --cream: #E8E0D0;
+          --muted: rgba(232,224,208,0.5);
+          --border: rgba(251,54,64,0.2);
+        }
+
+        * { box-sizing: border-box; }
+
+        .dm-nav-link {
+          font-size: 0.7rem;
+          letter-spacing: 0.2em;
+          text-transform: uppercase;
+          color: var(--muted);
+          text-decoration: none;
+          transition: color 0.2s;
+          font-family: 'Space Mono', monospace;
+        }
+        .dm-nav-link:hover { color: var(--imperial); }
+
+        .dm-nav-cta {
+          font-family: 'Space Mono', monospace;
+          font-size: 0.7rem;
+          letter-spacing: 0.15em;
+          text-transform: uppercase;
+          color: var(--night);
+          background: var(--imperial);
+          padding: 0.6rem 1.5rem;
+          text-decoration: none;
+          transition: background 0.2s, transform 0.15s;
+          display: inline-block;
+        }
+        .dm-nav-cta:hover { background: #ff4a54; transform: translateY(-1px); }
+
+        .dm-btn-primary {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.75rem;
+          background: var(--imperial);
+          color: var(--night);
+          font-family: 'Space Mono', monospace;
+          font-size: 0.7rem;
+          font-weight: 700;
+          letter-spacing: 0.15em;
+          text-transform: uppercase;
+          text-decoration: none;
+          padding: 1rem 2rem;
+          transition: transform 0.2s, box-shadow 0.2s;
+          border: none;
+          cursor: crosshair;
+          position: relative;
+          overflow: hidden;
+        }
+        .dm-btn-primary:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 30px var(--imperial-glow);
+        }
+
+        .dm-btn-ghost {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+          border: 1px solid var(--border);
+          color: var(--muted);
+          font-family: 'Space Mono', monospace;
+          font-size: 0.7rem;
+          letter-spacing: 0.15em;
+          text-transform: uppercase;
+          text-decoration: none;
+          padding: 1rem 1.5rem;
+          transition: border-color 0.2s, color 0.2s;
+          background: transparent;
+          cursor: crosshair;
+        }
+        .dm-btn-ghost:hover { border-color: var(--imperial); color: var(--imperial); }
+
+        .dm-feature-card {
+          padding: 3rem 2.5rem;
+          border-right: 1px solid var(--border);
+          position: relative;
+          overflow: hidden;
+          transition: background 0.3s;
+          cursor: default;
+          flex: 1;
+        }
+        .dm-feature-card:last-child { border-right: none; }
+        .dm-feature-card:hover { background: var(--imperial-dim); }
+
+        .dm-stat-item {
+          padding: 3rem 3.5rem;
+          border-right: 1px solid var(--border);
+          position: relative;
+          overflow: hidden;
+          flex: 1;
+        }
+        .dm-stat-item:last-child { border-right: none; }
+
+        @keyframes ticker {
+          0%   { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        @keyframes scan {
+          0%   { top: -2px; opacity: 0; }
+          5%   { opacity: 1; }
+          95%  { opacity: 0.3; }
+          100% { top: 100vh; opacity: 0; }
+        }
+        @keyframes floatCard {
+          0%, 100% { transform: translate(-50%, -50%) rotate(-3deg) translateY(0px); }
+          50%       { transform: translate(-50%, -50%) rotate(-3deg) translateY(-12px); }
+        }
+
+        .dm-ticker-inner {
+          display: inline-flex;
+          gap: 3rem;
+          animation: ticker 20s linear infinite;
+          font-family: 'Bebas Neue', sans-serif;
+          font-size: 0.9rem;
+          letter-spacing: 0.2em;
+          color: var(--night);
+        }
+
+        .dm-marquee-inner {
+          display: flex;
+          gap: 2rem;
+          animation: ticker 30s linear infinite;
+        }
+
+        .dm-marquee-tag {
+          font-size: 0.65rem;
+          letter-spacing: 0.2em;
+          text-transform: uppercase;
+          color: var(--muted);
+          white-space: nowrap;
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+        }
+        .dm-marquee-tag::before {
+          content: '';
+          display: inline-block;
+          width: 4px;
+          height: 4px;
+          background: var(--imperial);
+          transform: rotate(45deg);
+          flex-shrink: 0;
+        }
+
+        .dm-scan-line {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 2px;
+          background: rgba(251, 54, 64, 0.3);
+          animation: scan 8s linear infinite;
+          pointer-events: none;
+          z-index: 1000;
+        }
+
+        .dm-float-card {
+          position: absolute;
+          width: 260px;
+          height: 360px;
+          top: 50%;
+          left: 50%;
+          animation: floatCard 4s ease-in-out infinite;
+          background: linear-gradient(135deg, #0a1a10, #050e06);
+          border: 1px solid var(--border);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 1rem;
+        }
+
+        @media (max-width: 768px) {
+          .dm-hero-grid   { grid-template-columns: 1fr !important; }
+          .dm-hero-visual { display: none !important; }
+          .dm-stats-bar   { flex-direction: column !important; }
+          .dm-stat-item   { border-right: none !important; border-bottom: 1px solid var(--border) !important; }
+          .dm-features-grid { flex-direction: column !important; }
+          .dm-feature-card  { border-right: none !important; border-bottom: 1px solid var(--border) !important; }
+          .dm-section { padding: 4rem 1.5rem !important; }
+          .dm-footer { flex-direction: column !important; gap: 1rem !important; text-align: center !important; }
+        }
+      `}</style>
+
+      {/* Scan line */}
+      {/* <div className="dm-scan-line" aria-hidden="true" /> */}
+
+      {/* NAV */}
+      <motion.nav
+        initial={{ y: -60, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6 }}
+        style={{
+          position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
+          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+          padding: '1.5rem 3rem',
+          borderBottom: '1px solid var(--border)',
+          background: 'rgba(0,15,8,0.88)',
+          backdropFilter: 'blur(12px)',
+        }}
+      >
+        <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '1.4rem', letterSpacing: '0.15em', color: 'var(--cream)' }}>
+          AI<span style={{ color: 'var(--imperial)' }}>⚔</span>DM
+        </div>
+        <nav style={{ display: 'flex', gap: '2.5rem', alignItems: 'center', listStyle: 'none' }}>
+          <a href="#features" className="dm-nav-link">Features</a>
+          <a href="#lore" className="dm-nav-link">Lore</a>
+          <Link to="/create-character" className="dm-nav-cta">Begin Quest</Link>
+        </nav>
+      </motion.nav>
+
+      {/* HERO */}
+      <section
+        className="dm-hero-grid"
+        style={{
+          minHeight: '100vh',
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          paddingTop: '5rem',
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+      >
+        {/* Left */}
+        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '5rem 3rem 5rem 4rem', position: 'relative', zIndex: 2 }}>
+
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.7, delay: 0.1 }}
+            style={{ fontSize: '0.65rem', letterSpacing: '0.35em', textTransform: 'uppercase', color: 'var(--imperial)', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}
+          >
+            <span style={{ display: 'inline-block', width: '2.5rem', height: '1px', background: 'var(--imperial)' }} />
+            AI-Powered Narrative Engine
+          </motion.div>
+
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 'clamp(5rem,10vw,9rem)', lineHeight: 0.9, letterSpacing: '0.02em', marginBottom: '2rem' }}
+          >
+            <span style={{ color: 'var(--imperial)', display: 'block' }}>YOUR</span>
+            <span style={{ color: 'var(--cream)', display: 'block' }}>LEGEND</span>
+            <span style={{ display: 'block', color: 'transparent', WebkitTextStroke: '1px rgba(232,224,208,0.25)' }}>AWAITS</span>
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.4 }}
+            style={{ fontSize: '0.8rem', lineHeight: 1.9, color: 'var(--muted)', maxWidth: '380px', marginBottom: '3rem', fontStyle: 'italic' }}
+          >
+            Enter a world where every choice echoes through eternity.
+            An AI Dungeon Master breathes life into your darkest battles,
+            sharpest alliances, and most impossible triumphs.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+            style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}
+          >
+            <Link to="/create-character" className="dm-btn-primary">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/></svg>
+              Begin Your Quest
             </Link>
-          </div>
-        </motion.nav>
+            <button className="dm-btn-ghost">Watch Trailer</button>
+          </motion.div>
+        </div>
 
-        {/* Hero Section */}
-        <div className="flex-1 flex items-center justify-center px-6 py-20">
-          <div className="max-w-6xl w-full">
-            
-            {/* Main Hero Content */}
-            <div className="text-center space-y-8">
-              
-              {/* Title */}
-              <motion.div
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 1, delay: 0.2 }}
-              >
-                <motion.h1 
-                  className="text-7xl md:text-9xl font-black mb-6"
-                  style={{
-                    fontFamily: "'Cinzel', serif",
-                    textShadow: '0 0 40px rgba(168, 85, 247, 0.5), 0 0 80px rgba(168, 85, 247, 0.3)'
-                  }}
-                >
-                  <span className="bg-linear-to-r from-purple-400 via-pink-400 to-red-400 bg-clip-text text-transparent">
-                    YOUR LEGEND
-                  </span>
-                  <br />
-                  <span className="bg-linear-to-r from-red-400 via-orange-400 to-yellow-400 bg-clip-text text-transparent">
-                    AWAITS
-                  </span>
-                </motion.h1>
-                
-                <motion.p 
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.5 }}
-                  className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto leading-relaxed"
-                  style={{ fontFamily: "'Crimson Text', serif" }}
-                >
-                  Enter a world where AI breathes life into your every choice. 
-                  Battle fierce enemies, forge alliances, and carve your destiny 
-                  in an ever-evolving narrative.
-                </motion.p>
-              </motion.div>
-
-              {/* CTA Buttons */}
-              <motion.div
-                initial={{ y: 40, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.8 }}
-                className="flex flex-col sm:flex-row gap-4 justify-center items-center"
-              >
-                <Link to="/create-character">
-                  <motion.button
-                    whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(168, 85, 247, 0.6)' }}
-                    whileTap={{ scale: 0.95 }}
-                    className="group relative px-10 py-5 bg-linear-to-r from-purple-600 to-pink-600 rounded-2xl font-bold text-lg overflow-hidden shadow-2xl"
-                  >
-                    <div className="absolute inset-0 bg-linear-to-r from-purple-400 to-pink-400 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    <div className="relative flex items-center gap-3">
-                      <Sword size={24} />
-                      BEGIN YOUR QUEST
-                      <ChevronRight size={24} className="group-hover:translate-x-1 transition-transform" />
-                    </div>
-                  </motion.button>
-                </Link>
-                
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="px-10 py-5 border-2 border-purple-500 rounded-2xl font-semibold text-lg hover:bg-purple-500/20 transition"
-                >
-                  <div className="flex items-center gap-3">
-                    <BookOpen size={24} />
-                    LEARN MORE
+        {/* Right — floating character card */}
+        <div
+          className="dm-hero-visual"
+          style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}
+        >
+          <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center, rgba(251,54,64,0.1) 0%, transparent 70%)' }} />
+          <div style={{ position: 'relative', width: 380, height: 500 }}>
+            {/* Accent cards */}
+            <div style={{ position: 'absolute', width: 160, height: 220, background: 'var(--imperial-dim)', border: '1px solid rgba(251,54,64,0.3)', right: 20, top: 60, transform: 'rotate(6deg)', zIndex: 0 }} />
+            <div style={{ position: 'absolute', width: 120, height: 160, border: '1px solid rgba(232,224,208,0.07)', left: 30, bottom: 40, transform: 'rotate(-8deg)', zIndex: 0 }} />
+            {/* Main floating card */}
+            <div className="dm-float-card">
+              <Swords size={56} color="#FB3640" strokeWidth={2.5} />
+              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '1.8rem', letterSpacing: '0.1em', color: 'var(--imperial)' }}>SHADOW WARRIOR</div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', width: '80%' }}>
+                {[['47','ATK'],['32','DEF'],['89','HP'],['LV.9','RANK']].map(([val, lbl]) => (
+                  <div key={lbl} style={{ border: '1px solid var(--border)', padding: '0.5rem', textAlign: 'center' }}>
+                    <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '1.2rem', color: 'var(--cream)' }}>{val}</div>
+                    <div style={{ fontSize: '0.5rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--muted)', marginTop: 2 }}>{lbl}</div>
                   </div>
-                </motion.button>
-              </motion.div>
-
-              {/* Stats */}
-              <motion.div
-                initial={{ y: 40, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 1 }}
-                className="grid grid-cols-3 gap-8 max-w-3xl mx-auto mt-16 pt-16 border-t border-purple-900/30"
-              >
-                <div className="text-center">
-                  <div className="text-4xl font-bold bg-linear-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                    ∞
-                  </div>
-                  <div className="text-sm text-gray-400 mt-2">Infinite Stories</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-4xl font-bold bg-linear-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                    100+
-                  </div>
-                  <div className="text-sm text-gray-400 mt-2">Unique Enemies</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-4xl font-bold bg-linear-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                    AI
-                  </div>
-                  <div className="text-sm text-gray-400 mt-2">Powered Narrative</div>
-                </div>
-              </motion.div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
+      </section>
 
-        {/* Features Section */}
-        <motion.section
-          id="features"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 1 }}
-          viewport={{ once: true }}
-          className="py-20 px-6 border-t border-purple-900/30"
-        >
-          <div className="max-w-7xl mx-auto">
-            <h2 className="text-5xl font-bold text-center mb-16 bg-linear-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-              Epic Features
-            </h2>
-            
-            <div className="grid md:grid-cols-3 gap-8">
-              {[
-                {
-                  icon: <Sword size={40} />,
-                  title: 'Dynamic Combat',
-                  description: 'Engage in turn-based battles with intelligent AI enemies. Every fight is unique and challenging.'
-                },
-                {
-                  icon: <Scroll size={40} />,
-                  title: 'Living Narrative',
-                  description: 'Your choices shape the story. AI crafts responses based on your decisions and playstyle.'
-                },
-                {
-                  icon: <Skull size={40} />,
-                  title: 'Character Growth',
-                  description: 'Level up, gain abilities, and customize your hero with attributes, skills, and equipment.'
-                }
-              ].map((feature, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ y: 50, opacity: 0 }}
-                  whileInView={{ y: 0, opacity: 1 }}
-                  transition={{ delay: index * 0.2 }}
-                  viewport={{ once: true }}
-                  whileHover={{ y: -10, boxShadow: '0 20px 40px rgba(168, 85, 247, 0.3)' }}
-                  className="bg-linear-to-br from-purple-900/20 to-pink-900/20 backdrop-blur-sm border border-purple-500/30 rounded-2xl p-8 text-center"
-                >
-                  <div className="inline-block p-4 bg-purple-600/20 rounded-full mb-4 text-purple-400">
-                    {feature.icon}
-                  </div>
-                  <h3 className="text-2xl font-bold mb-3">{feature.title}</h3>
-                  <p className="text-gray-400 leading-relaxed">{feature.description}</p>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </motion.section>
-
-        {/* Footer CTA */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="py-20 px-6 text-center border-t border-purple-900/30"
-        >
-          <h2 className="text-4xl md:text-6xl font-bold mb-6">
-            Ready to Write Your Story?
-          </h2>
-          <p className="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
-            Join thousands of adventurers in crafting legendary tales powered by AI.
-          </p>
-          <Link to="/create-character">
-            <motion.button
-              whileHover={{ scale: 1.05, boxShadow: '0 0 40px rgba(168, 85, 247, 0.8)' }}
-              whileTap={{ scale: 0.95 }}
-              className="px-12 py-6 bg-linear-to-r from-purple-600 to-pink-600 rounded-full font-bold text-xl shadow-2xl"
-            >
-              Start Your Adventure Now
-            </motion.button>
-          </Link>
-        </motion.div>
-
-        {/* Footer */}
-        <footer className="border-t border-purple-900/30 py-8 px-6 text-center text-gray-500 text-sm">
-          <p>© 2025 AI Dungeon Master. Powered by Gemini AI & Anthropic Claude.</p>
-        </footer>
+      {/* TICKER */}
+      <div aria-hidden="true" style={{ background: 'var(--imperial)', overflow: 'hidden', padding: '0.6rem 0', whiteSpace: 'nowrap' }}>
+        <div className="dm-ticker-inner">
+          {[...TICKER_ITEMS, ...TICKER_ITEMS].map((item, i) => (
+            <span key={i}>
+              {item}
+              {i % 1 === 0 && <span style={{ margin: '0 1rem', opacity: 0.5 }}>✦</span>}
+            </span>
+          ))}
+        </div>
       </div>
 
-      {/* Add Google Fonts */}
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
-      `}</style>
+      {/* STATS BAR */}
+      <div
+        className="dm-stats-bar"
+        style={{ display: 'flex', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)' }}
+      >
+        {[['∞','Unique Story Paths'],['100+','Crafted Enemies'],['AI','Powered Narrative Core']].map(([num, label]) => (
+          <div key={label} className="dm-stat-item">
+            <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '4.5rem', lineHeight: 1, color: 'var(--imperial)', marginBottom: '0.5rem', position: 'relative', zIndex: 1 }}>{num}</div>
+            <div style={{ fontSize: '0.65rem', letterSpacing: '0.25em', textTransform: 'uppercase', color: 'var(--muted)', position: 'relative', zIndex: 1 }}>{label}</div>
+            <div style={{ position: 'absolute', right: -10, bottom: -20, fontFamily: "'Bebas Neue', sans-serif", fontSize: '8rem', color: 'rgba(251,54,64,0.04)', lineHeight: 1, pointerEvents: 'none' }} aria-hidden="true">{num}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* FEATURES */}
+      <section id="features" className="dm-section" style={{ padding: '7rem 4rem' }}>
+        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: '4rem', paddingBottom: '2rem', borderBottom: '1px solid var(--border)' }}>
+          <div>
+            <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '0.8rem', letterSpacing: '0.3em', color: 'var(--imperial)', marginBottom: '0.5rem' }}>02 — ARSENAL</div>
+            <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '3.5rem', lineHeight: 1, letterSpacing: '0.04em' }}>EPIC FEATURES</h2>
+          </div>
+          <Link to="/create-character" className="dm-btn-ghost">View All →</Link>
+        </div>
+
+        <div className="dm-features-grid" style={{ display: 'flex', border: '1px solid var(--border)' }}>
+   {FEATURES.map((f, i) => {
+  const Icon = f.icon;
+
+  return (
+    <motion.div
+      key={f.num}
+      className="dm-feature-card"
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ delay: i * 0.15 }}
+      viewport={{ once: true }}
+    >
+      <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '5rem', color: 'rgba(251,54,64,0.07)', lineHeight: 1, marginBottom: '-1rem' }}>
+        {f.num}
+      </div>
+
+      {/* ICON */}
+      <div style={{ marginBottom: '1.5rem', position: 'relative', zIndex: 1 }}>
+        <Icon size={36} color="#FB3640" />
+      </div>
+
+      <h3 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '1.8rem', letterSpacing: '0.04em', marginBottom: '1rem', position: 'relative', zIndex: 1 }}>
+        {f.title}
+      </h3>
+
+      <p style={{ fontSize: '0.72rem', lineHeight: 1.9, color: 'var(--muted)', position: 'relative', zIndex: 1 }}>
+        {f.desc}
+      </p>
+    </motion.div>
+  );
+})}
+        </div>
+      </section>
+
+      {/* MARQUEE */}
+      <div aria-hidden="true" style={{ borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)', overflow: 'hidden', padding: '1.5rem 0' }}>
+        <div className="dm-marquee-inner">
+          {[...MARQUEE_ITEMS, ...MARQUEE_ITEMS].map((item, i) => (
+            <span key={i} className="dm-marquee-tag">{item}</span>
+          ))}
+        </div>
+      </div>
+
+      {/* CTA */}
+      <section style={{ padding: '8rem 4rem', textAlign: 'center', position: 'relative', overflow: 'hidden', borderTop: '1px solid var(--border)' }}>
+        <div style={{ position: 'absolute', top: '-50%', left: '50%', transform: 'translateX(-50%)', width: 600, height: 600, background: 'radial-gradient(circle, rgba(251,54,64,0.07) 0%, transparent 60%)', pointerEvents: 'none' }} />
+        <motion.h2
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7 }}
+          viewport={{ once: true }}
+          style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 'clamp(3rem,8vw,7rem)', lineHeight: 0.9, letterSpacing: '0.02em', marginBottom: '2rem', position: 'relative', zIndex: 1 }}
+        >
+          READY TO<br /><span style={{ color: 'var(--imperial)' }}>WRITE</span><br />YOUR STORY?
+        </motion.h2>
+        <p style={{ fontSize: '0.75rem', color: 'var(--muted)', letterSpacing: '0.1em', marginBottom: '3rem', fontStyle: 'italic', position: 'relative', zIndex: 1 }}>
+          // Join thousands of adventurers forging legendary tales //
+        </p>
+        <Link to="/create-character" className="dm-btn-primary" style={{ fontSize: '0.8rem', padding: '1.2rem 3rem', position: 'relative', zIndex: 1 }}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+          Start Your Adventure
+        </Link>
+      </section>
+
+      {/* FOOTER */}
+      <footer className="dm-footer" style={{ padding: '2rem 4rem', borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '1rem', letterSpacing: '0.1em' }}>
+          AI<span style={{ color: 'var(--imperial)' }}>⚔</span>DUNGEON MASTER
+        </div>
+        <div style={{ fontSize: '0.6rem', color: 'var(--muted)', letterSpacing: '0.1em' }}>
+          © 2025 AI Dungeon Master — Powered by Anthropic Claude
+        </div>
+      </footer>
+
     </div>
   );
 }
-
-export default LandingPage;
