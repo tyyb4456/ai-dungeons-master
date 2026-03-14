@@ -56,72 +56,129 @@ export default function LandingPage() {
 
         * { box-sizing: border-box; }
 
-        .dm-nav-link {
-          font-size: 0.7rem;
-          letter-spacing: 0.2em;
-          text-transform: uppercase;
-          color: var(--muted);
-          text-decoration: none;
-          transition: color 0.2s;
-          font-family: 'Space Mono', monospace;
-        }
-        .dm-nav-link:hover { color: var(--imperial); }
+      .dm-nav-link {
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  font-family: 'Space Mono', monospace;
+  position: relative;
+  padding-bottom: 3px;
+  transition: color 0.2s;
+}
 
-        .dm-nav-cta {
-          font-family: 'Space Mono', monospace;
-          font-size: 0.7rem;
-          letter-spacing: 0.15em;
-          text-transform: uppercase;
-          color: var(--night);
-          background: var(--imperial);
-          padding: 0.6rem 1.5rem;
-          text-decoration: none;
-          transition: background 0.2s, transform 0.15s;
-          display: inline-block;
-        }
-        .dm-nav-cta:hover { background: #ff4a54; transform: translateY(-1px); }
+/* Animated underline on hover */
+.dm-nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0%;
+  height: 1px;
+  background: var(--imperial);
+  transition: width 0.25s ease;
+}
 
-        .dm-btn-primary {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.75rem;
-          background: var(--imperial);
-          color: var(--night);
-          font-family: 'Space Mono', monospace;
-          font-size: 0.7rem;
-          font-weight: 700;
-          letter-spacing: 0.15em;
-          text-transform: uppercase;
-          text-decoration: none;
-          padding: 1rem 2rem;
-          transition: transform 0.2s, box-shadow 0.2s;
-          border: none;
-          cursor: crosshair;
-          position: relative;
-          overflow: hidden;
-        }
-        .dm-btn-primary:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 8px 30px var(--imperial-glow);
-        }
+.dm-nav-link:hover { color: var(--imperial); }
+.dm-nav-link:hover::after { width: 100%; }
 
-        .dm-btn-ghost {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.5rem;
-          border: 1px solid var(--border);
-          color: var(--muted);
-          font-family: 'Space Mono', monospace;
-          font-size: 0.7rem;
-          letter-spacing: 0.15em;
-          text-transform: uppercase;
-          text-decoration: none;
-          padding: 1rem 1.5rem;
-          transition: border-color 0.2s, color 0.2s;
-          background: transparent;
-          cursor: crosshair;
-        }
-        .dm-btn-ghost:hover { border-color: var(--imperial); color: var(--imperial); }
+.dm-nav-cta {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--night);
+  background: var(--imperial);
+  padding: 0.6rem 1.5rem;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+  box-shadow: 3px 3px 0px rgba(0,0,0,0.4);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.dm-nav-cta:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0px rgba(0,0,0,0.5);
+}
+
+.dm-nav-cta:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px rgba(0,0,0,0.3);
+}
+
+.dm-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--cream);
+  color: var(--night);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 1.1rem 2.4rem;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  box-shadow: 4px 4px 0px rgba(0,0,0,0.5), 0 0 20px rgba(var(--imperial-rgb), 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dm-btn-primary:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px rgba(0,0,0,0.6), 0 0 30px rgba(var(--imperial-rgb), 0.5);
+}
+
+.dm-btn-primary:active {
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0px rgba(0,0,0,0.4);
+}
+
+.dm-btn-shimmer {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.25), transparent);
+  transition: left 0.5s ease;
+  pointer-events: none;
+}
+
+.dm-btn-primary:hover .dm-btn-shimmer {
+  left: 150%;
+}
+
+.dm-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 1rem 1.5rem;
+  transition: border-color 0.2s, color 0.2s;
+  background: transparent;
+  cursor: pointer; /* fixed */
+}
+
+.dm-btn-ghost:hover {
+  border-color: var(--imperial);
+  color: var(--imperial);
+}
 
         .dm-feature-card {
           padding: 3rem 2.5rem;
@@ -135,14 +192,14 @@ export default function LandingPage() {
         .dm-feature-card:last-child { border-right: none; }
         .dm-feature-card:hover { background: var(--imperial-dim); }
 
-        .dm-stat-item {
-          padding: 3rem 3.5rem;
-          border-right: 1px solid var(--border);
-          position: relative;
-          overflow: hidden;
-          flex: 1;
-        }
-        .dm-stat-item:last-child { border-right: none; }
+        // .dm-stat-item {
+        //   padding: 3rem 3.5rem;
+        //   border-right: 1px solid var(--border);
+        //   position: relative;
+        //   overflow: hidden;
+        //   flex: 1;
+        // }
+        // .dm-stat-item:last-child { border-right: none; }
 
         @keyframes ticker {
           0%   { transform: translateX(0); }
@@ -159,15 +216,15 @@ export default function LandingPage() {
           50%       { transform: translate(-50%, -50%) rotate(-3deg) translateY(-12px); }
         }
 
-        .dm-ticker-inner {
-          display: inline-flex;
-          gap: 3rem;
-          animation: ticker 20s linear infinite;
-          font-family: 'Bebas Neue', sans-serif;
-          font-size: 0.9rem;
-          letter-spacing: 0.2em;
-          color: var(--night);
-        }
+        // .dm-ticker-inner {
+        //   display: inline-flex;
+        //   gap: 3rem;
+        //   animation: ticker 20s linear infinite;
+        //   font-family: 'Bebas Neue', sans-serif;
+        //   font-size: 1.4rem;
+        //   letter-spacing: 0.2em;
+        //   color: black;      // var(--night);
+        // }
 
         .dm-marquee-inner {
           display: flex;
@@ -195,17 +252,17 @@ export default function LandingPage() {
           flex-shrink: 0;
         }
 
-        .dm-scan-line {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          height: 2px;
-          background: rgba(251, 54, 64, 0.3);
-          animation: scan 8s linear infinite;
-          pointer-events: none;
-          z-index: 1000;
-        }
+        // .dm-scan-line {
+        //   position: fixed;
+        //   top: 0;
+        //   left: 0;
+        //   right: 0;
+        //   height: 2px;
+        //   background: rgba(251, 54, 64, 0.3);
+        //   animation: scan 8s linear infinite;
+        //   pointer-events: none;
+        //   z-index: 1000;
+        // }
 
         .dm-float-card {
           position: absolute;
@@ -257,7 +314,7 @@ export default function LandingPage() {
         </div>
         <nav style={{ display: 'flex', gap: '2.5rem', alignItems: 'center', listStyle: 'none' }}>
           <a href="#features" className="dm-nav-link">Features</a>
-          <a href="#lore" className="dm-nav-link">Lore</a>
+          {/* <a href="#lore" className="dm-nav-link">Lore</a> */}
           <Link to="/create-character" className="dm-nav-cta">Begin Quest</Link>
         </nav>
       </motion.nav>
@@ -316,7 +373,10 @@ export default function LandingPage() {
             style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}
           >
             <Link to="/create-character" className="dm-btn-primary">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/></svg>
+              <span className="dm-btn-shimmer" />
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M7 17L17 7M17 7H7M17 7V17" />
+              </svg>
               Begin Your Quest
             </Link>
             <button className="dm-btn-ghost">Watch Trailer</button>
@@ -338,7 +398,7 @@ export default function LandingPage() {
               <Swords size={56} color="#FB3640" strokeWidth={2.5} />
               <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '1.8rem', letterSpacing: '0.1em', color: 'var(--imperial)' }}>SHADOW WARRIOR</div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', width: '80%' }}>
-                {[['47','ATK'],['32','DEF'],['89','HP'],['LV.9','RANK']].map(([val, lbl]) => (
+                {[['47', 'ATK'], ['32', 'DEF'], ['89', 'HP'], ['LV.9', 'RANK']].map(([val, lbl]) => (
                   <div key={lbl} style={{ border: '1px solid var(--border)', padding: '0.5rem', textAlign: 'center' }}>
                     <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '1.2rem', color: 'var(--cream)' }}>{val}</div>
                     <div style={{ fontSize: '0.5rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--muted)', marginTop: 2 }}>{lbl}</div>
@@ -351,7 +411,7 @@ export default function LandingPage() {
       </section>
 
       {/* TICKER */}
-      <div aria-hidden="true" style={{ background: 'var(--imperial)', overflow: 'hidden', padding: '0.6rem 0', whiteSpace: 'nowrap' }}>
+      {/* <div aria-hidden="true" style={{ background: 'var(--imperial)', overflow: 'hidden', padding: '0.6rem 0', whiteSpace: 'nowrap' }}>
         <div className="dm-ticker-inner">
           {[...TICKER_ITEMS, ...TICKER_ITEMS].map((item, i) => (
             <span key={i}>
@@ -360,10 +420,10 @@ export default function LandingPage() {
             </span>
           ))}
         </div>
-      </div>
+      </div> */}
 
       {/* STATS BAR */}
-      <div
+      {/* <div
         className="dm-stats-bar"
         style={{ display: 'flex', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)' }}
       >
@@ -374,7 +434,7 @@ export default function LandingPage() {
             <div style={{ position: 'absolute', right: -10, bottom: -20, fontFamily: "'Bebas Neue', sans-serif", fontSize: '8rem', color: 'rgba(251,54,64,0.04)', lineHeight: 1, pointerEvents: 'none' }} aria-hidden="true">{num}</div>
           </div>
         ))}
-      </div>
+      </div> */}
 
       {/* FEATURES */}
       <section id="features" className="dm-section" style={{ padding: '7rem 4rem' }}>
@@ -387,48 +447,48 @@ export default function LandingPage() {
         </div>
 
         <div className="dm-features-grid" style={{ display: 'flex', border: '1px solid var(--border)' }}>
-   {FEATURES.map((f, i) => {
-  const Icon = f.icon;
+          {FEATURES.map((f, i) => {
+            const Icon = f.icon;
 
-  return (
-    <motion.div
-      key={f.num}
-      className="dm-feature-card"
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ delay: i * 0.15 }}
-      viewport={{ once: true }}
-    >
-      <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '5rem', color: 'rgba(251,54,64,0.07)', lineHeight: 1, marginBottom: '-1rem' }}>
-        {f.num}
-      </div>
+            return (
+              <motion.div
+                key={f.num}
+                className="dm-feature-card"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.15 }}
+                viewport={{ once: true }}
+              >
+                <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '5rem', color: 'rgba(251,54,64,0.07)', lineHeight: 1, marginBottom: '-1rem' }}>
+                  {f.num}
+                </div>
 
-      {/* ICON */}
-      <div style={{ marginBottom: '1.5rem', position: 'relative', zIndex: 1 }}>
-        <Icon size={36} color="#FB3640" />
-      </div>
+                {/* ICON */}
+                <div style={{ marginBottom: '1.5rem', position: 'relative', zIndex: 1 }}>
+                  <Icon size={36} color="#FB3640" />
+                </div>
 
-      <h3 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '1.8rem', letterSpacing: '0.04em', marginBottom: '1rem', position: 'relative', zIndex: 1 }}>
-        {f.title}
-      </h3>
+                <h3 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '1.8rem', letterSpacing: '0.04em', marginBottom: '1rem', position: 'relative', zIndex: 1 }}>
+                  {f.title}
+                </h3>
 
-      <p style={{ fontSize: '0.72rem', lineHeight: 1.9, color: 'var(--muted)', position: 'relative', zIndex: 1 }}>
-        {f.desc}
-      </p>
-    </motion.div>
-  );
-})}
+                <p style={{ fontSize: '0.72rem', lineHeight: 1.9, color: 'var(--muted)', position: 'relative', zIndex: 1 }}>
+                  {f.desc}
+                </p>
+              </motion.div>
+            );
+          })}
         </div>
       </section>
 
       {/* MARQUEE */}
-      <div aria-hidden="true" style={{ borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)', overflow: 'hidden', padding: '1.5rem 0' }}>
+      {/* <div aria-hidden="true" style={{ borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)', overflow: 'hidden', padding: '1.5rem 0' }}>
         <div className="dm-marquee-inner">
           {[...MARQUEE_ITEMS, ...MARQUEE_ITEMS].map((item, i) => (
             <span key={i} className="dm-marquee-tag">{item}</span>
           ))}
         </div>
-      </div>
+      </div> */}
 
       {/* CTA */}
       <section style={{ padding: '8rem 4rem', textAlign: 'center', position: 'relative', overflow: 'hidden', borderTop: '1px solid var(--border)' }}>
@@ -446,7 +506,7 @@ export default function LandingPage() {
           // Join thousands of adventurers forging legendary tales //
         </p>
         <Link to="/create-character" className="dm-btn-primary" style={{ fontSize: '0.8rem', padding: '1.2rem 3rem', position: 'relative', zIndex: 1 }}>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17L17 7M17 7H7M17 7V17" /></svg>
           Start Your Adventure
         </Link>
       </section>
@@ -457,7 +517,7 @@ export default function LandingPage() {
           AI<span style={{ color: 'var(--imperial)' }}>⚔</span>DUNGEON MASTER
         </div>
         <div style={{ fontSize: '0.6rem', color: 'var(--muted)', letterSpacing: '0.1em' }}>
-          © 2025 AI Dungeon Master — Powered by Anthropic Claude
+          © 2026 AI Dungeon Master — Powered by Gemini
         </div>
       </footer>
 

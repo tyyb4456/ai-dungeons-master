@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Sword, Sparkles, Eye, Cross, AlertTriangle } from 'lucide-react';
 
 /* ─── class definitions ───────────────────────────── */
 const CLASSES = [
@@ -8,6 +9,8 @@ const CLASSES = [
   { name: 'Rogue',   icon: '◈',  description: 'Stealthy cunning' },
   { name: 'Cleric',  icon: '☩',  description: 'Divine healer' },
 ];
+
+
 
 const SETTINGS = [
   'Dark Fantasy Medieval Kingdom',
@@ -70,6 +73,30 @@ function CharacterCreation({ onStartGame }) {
         .cc-input:focus{border-color:#FB3640!important;box-shadow:0 0 0 2px rgba(251,54,64,.15)!important;}
         .cc-select:focus{border-color:#FB3640!important;outline:none;}
         .cc-submit-ghost:hover:not(:disabled){background:transparent!important;color:#FB3640!important;box-shadow:0 0 20px rgba(251,54,64,.35)!important;}
+
+        .cc-btn-shimmer {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: left 0.5s ease;
+  pointer-events: none;
+}
+.cc-submit-ghost:hover:not(:disabled) .cc-btn-shimmer {
+  left: 150%;
+}
+.cc-submit-ghost:hover:not(:disabled) {
+  transform: translate(-2px, -2px) !important;
+  box-shadow: 6px 6px 0px rgba(0,0,0,0.6), 0 0 30px rgba(232,224,208,0.25) !important;
+  background: var(--cream, #E8E0D0) !important;
+  color: #000F08 !important;
+}
+.cc-submit-ghost:active:not(:disabled) {
+  transform: translate(1px, 1px) !important;
+  box-shadow: 2px 2px 0px rgba(0,0,0,0.4) !important;
+}
       `}</style>
 
       <div className="cc-scanline" aria-hidden="true" />
@@ -88,9 +115,10 @@ function CharacterCreation({ onStartGame }) {
           Character Creation
           <span style={{ display: 'inline-block', width: '2rem', height: 1, background: T.imp }} />
         </div>
-        <h1 className="cc-title" style={{ fontFamily: T.fh, fontSize: 'clamp(3rem,8vw,5rem)', letterSpacing: '.1em', color: T.imp, lineHeight: 1 }}>
-          FORGE YOUR LEGEND
-        </h1>
+<h1 className="cc-title" style={{ fontFamily: T.fh, fontSize: 'clamp(3rem,8vw,5rem)', letterSpacing: '.1em', lineHeight: 1 }}>
+  <span style={{ color: T.imp }}>FORGE YOUR </span>
+  <span style={{ color: T.cream }}>LEGEND</span>
+</h1>
         <p style={{ fontSize: '.65rem', letterSpacing: '.18em', textTransform: 'uppercase', color: T.muted, marginTop: '.6rem', fontStyle: 'italic' }}>
           // Every choice echoes through eternity //
         </p>
@@ -149,7 +177,7 @@ function CharacterCreation({ onStartGame }) {
                     border: `1px solid ${characterClass === cls.name ? T.imp : T.border}`,
                     padding: '.9rem .5rem',
                     background: characterClass === cls.name ? T.impDim : 'transparent',
-                    cursor: 'crosshair',
+                    cursor: 'pointer',
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
@@ -186,7 +214,7 @@ function CharacterCreation({ onStartGame }) {
                   fontFamily: T.fm,
                   fontSize: '.7rem',
                   letterSpacing: '.08em',
-                  cursor: 'crosshair',
+                  cursor: 'pointer',
                   appearance: 'none',
                   transition: 'border-color .15s',
                 }}
@@ -201,32 +229,37 @@ function CharacterCreation({ onStartGame }) {
           </div>
 
           {/* ── SUBMIT ── */}
-          <motion.button
-            type="submit"
-            disabled={!hasName}
-            className="cc-submit-ghost"
-            whileTap={hasName ? { scale: .98 } : {}}
-            style={{
-              width: '100%',
-              padding: '1rem',
-              marginTop: '2rem',
-              fontFamily: T.fh,
-              fontSize: '1.1rem',
-              letterSpacing: '.15em',
-              border: `1px solid ${hasName ? T.imp : T.border}`,
-              background: hasName ? T.imp : 'rgba(255,255,255,.04)',
-              color: hasName ? T.night : T.muted,
-              cursor: hasName ? 'crosshair' : 'not-allowed',
-              transition: 'all .15s',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '.6rem',
-            }}
-          >
-            <span style={{ fontSize: '.9rem' }}>{hasName ? '⚔' : '⚠'}</span>
-            {hasName ? 'BEGIN ADVENTURE' : 'ENTER YOUR NAME FIRST'}
-          </motion.button>
+<motion.button
+  type="submit"
+  disabled={!hasName}
+  className="cc-submit-ghost"
+  whileTap={hasName ? { scale: .98 } : {}}
+  style={{
+    width: '100%',
+    padding: '1.1rem',
+    marginTop: '2rem',
+    fontFamily: T.fh,
+    fontSize: '1.1rem',
+    letterSpacing: '.15em',
+    border: `1px solid ${hasName ? T.cream : T.border}`,
+    background: hasName ? T.cream : 'rgba(255,255,255,.04)',
+    color: hasName ? T.night : T.muted,
+    cursor: hasName ? 'pointer' : 'not-allowed',
+    transition: 'all .2s ease',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '.6rem',
+    position: 'relative',
+    overflow: 'hidden',
+    clipPath: 'polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px))',
+    boxShadow: hasName ? `4px 4px 0px rgba(0,0,0,0.5), 0 0 20px rgba(232,224,208,0.15)` : 'none',
+  }}
+>
+  <span className="cc-btn-shimmer" />
+  <span style={{ display: 'flex' }}>{hasName ? <Sword size={16} /> : <AlertTriangle size={16} />}</span>
+  {hasName ? 'BEGIN ADVENTURE' : 'ENTER YOUR NAME FIRST'}
+</motion.button>
 
         </form>
       </motion.div>

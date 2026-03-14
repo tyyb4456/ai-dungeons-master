@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { gameApi } from '../services/api';
+import { Sword, Sparkles, Eye, Cross, AlertTriangle } from 'lucide-react';
 
 /* ─── shared design tokens ────────────────────────── */
 const T = {
@@ -17,6 +18,7 @@ const T = {
   orange:  '#FF9020',
   fh:      "'Bebas Neue',sans-serif",
   fm:      "'Space Mono',monospace",
+  success: '#4ade80',
 };
 
 /* ─── ResourceBar ─────────────────────────────────── */
@@ -38,6 +40,15 @@ function ResourceBar({ label, current, max, color }) {
           <div style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: 2, background: 'rgba(255,255,255,.7)' }} />
         </motion.div>
       </div>
+    </div>
+  );
+}
+
+function FieldLabel({ children }) {
+  return (
+    <div style={{ fontSize: '.6rem', letterSpacing: '.3em', textTransform: 'uppercase', color: T.muted, display: 'flex', alignItems: 'center', gap: '.5rem', marginBottom: '.75rem' }}>
+      <span style={{ display: 'inline-block', width: '.8rem', height: 1, background: T.imp }} />
+      {children}
     </div>
   );
 }
@@ -125,6 +136,39 @@ function GameScreen({ sessionId, initialGameData, onCombatStart }) {
           .gs-grid{grid-template-columns:1fr!important;}
           .gs-sidebar{border-right:none!important;border-bottom:1px solid rgba(251,54,64,.18)!important;position:static!important;}
         }
+
+.gs-combat-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px rgba(0,0,0,0.6), 0 0 30px rgba(232,224,208,0.3) !important;
+}
+.gs-combat-btn:active {
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0px rgba(0,0,0,0.4) !important;
+}
+.gs-combat-shimmer {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.25), transparent);
+  transition: left 0.5s ease;
+  pointer-events: none;
+}
+.gs-combat-btn:hover .gs-combat-shimmer {
+  left: 150%;
+}
+
+.gs-inv-item:hover {
+  border-color: rgba(251,54,64,.5) !important;
+  color: rgba(232,224,208,.8) !important;
+}
+
+/* hide scrollbar on sidebar but keep scroll */
+.gs-sidebar::-webkit-scrollbar { width: 3px; }
+.gs-sidebar::-webkit-scrollbar-track { background: transparent; }
+.gs-sidebar::-webkit-scrollbar-thumb { background: rgba(251,54,64,.3); }
+
       `}</style>
 
       <div className="gs-scanline" aria-hidden="true" />
@@ -153,106 +197,132 @@ function GameScreen({ sessionId, initialGameData, onCombatStart }) {
           >
             ← Exit
           </button>
-          <div style={{ fontFamily: T.fh, fontSize: '1.6rem', letterSpacing: '.12em', color: T.imp, animation: 'gs-flicker 4s infinite' }}>
-            AI⚔DM
-          </div>
+<div style={{ fontFamily: T.fh, fontSize: '1.6rem', letterSpacing: '.12em', animation: 'gs-flicker 4s infinite' }}>
+  <span style={{ color: T.imp }}>AI⚔</span>
+  <span style={{ color: T.cream }}>DM</span>
+</div>
         </div>
         <div style={{ fontSize: '.55rem', letterSpacing: '.2em', textTransform: 'uppercase', color: T.muted, position: 'relative', zIndex: 1 }}>
           Session: {sessionId.slice(0, 8)}...
         </div>
       </motion.header>
 
-      {/* ── GRID ── */}
-      <div className="gs-grid" style={{ display: 'grid', gridTemplateColumns: '220px 1fr', minHeight: 'calc(100vh - 56px)' }}>
+{/* ── GRID ── */}
+<div className="gs-grid" style={{ display: 'grid', gridTemplateColumns: '220px 1fr', minHeight: 'calc(100vh - 56px)' }}>
 
-        {/* ── SIDEBAR ── */}
-        <motion.aside
-          initial={{ x: -30, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          style={{ borderRight: `1px solid ${T.border}`, padding: '1.2rem 1rem', display: 'flex', flexDirection: 'column', gap: '1.2rem', background: 'rgba(0,0,0,.25)', position: 'sticky', top: 0, alignSelf: 'start' }}
-          className="gs-sidebar"
+  {/* ── SIDEBAR ── */}
+  <motion.aside
+    initial={{ x: -30, opacity: 0 }}
+    animate={{ x: 0, opacity: 1 }}
+    style={{
+      borderRight: `1px solid ${T.border}`,
+      padding: '1.2rem 1rem',
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '1.2rem',
+      background: 'rgba(0,0,0,.25)',
+      position: 'sticky',
+      top: 56,
+      alignSelf: 'start',
+      height: 'calc(100vh - 56px)',
+      overflowY: 'auto',
+    }}
+    className="gs-sidebar"
+  >
+    {/* name */}
+    <div>
+      <FieldLabel>Character</FieldLabel>
+      <div style={{ fontFamily: T.fh, fontSize: '1.5rem', letterSpacing: '.08em', lineHeight: 1 }}>
+        {ps.name || 'Hero'}
+      </div>
+      <div style={{ fontSize: '.55rem', letterSpacing: '.18em', textTransform: 'uppercase', color: T.imp, marginTop: 2 }}>
+        {ps.characterClass} · Level {ps.level}
+      </div>
+    </div>
+
+    {/* vitals */}
+    <div>
+      <FieldLabel>Vitals</FieldLabel>
+      <ResourceBar label="Health"  current={ps.hp}      max={ps.max_hp}      color={T.imp}    />
+      <ResourceBar label="Mana"    current={ps.mana}    max={ps.max_mana}    color={T.blue}   />
+      <ResourceBar label="Stamina" current={ps.stamina} max={ps.max_stamina} color={T.orange} />
+    </div>
+
+    {/* XP */}
+    <div style={{ border: `1px solid rgba(255,184,48,.2)`, padding: '.7rem', background: 'rgba(255,184,48,.04)' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '.4rem' }}>
+        <span style={{ fontFamily: T.fh, fontSize: '1.2rem', letterSpacing: '.08em', color: T.gold }}>LV.{ps.level}</span>
+        <span style={{ fontSize: '.55rem', letterSpacing: '.12em', color: 'rgba(255,184,48,.6)' }}>{ps.xp} / {ps.xp_to_next}</span>
+      </div>
+      <div style={{ height: 5, background: 'rgba(255,255,255,.06)' }}>
+        <motion.div
+          initial={{ width: 0 }}
+          animate={{ width: `${xpPct}%` }}
+          transition={{ duration: .5 }}
+          style={{ height: '100%', background: T.gold }}
+        />
+      </div>
+    </div>
+
+    {/* inventory */}
+    <div>
+      <FieldLabel>Inventory</FieldLabel>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, minHeight: 40 }}>
+        {ps.inventory?.length > 0 ? ps.inventory.map((item, i) => (
+          <span
+            key={i}
+            className="gs-inv-item"
+            style={{
+              fontSize: '.55rem',
+              letterSpacing: '.1em',
+              textTransform: 'uppercase',
+              padding: '3px 7px',
+              border: `1px solid ${T.border}`,
+              color: T.muted,
+              transition: 'all .15s',
+              cursor: 'default',
+            }}
+          >
+            {item}
+          </span>
+        )) : (
+          <span style={{ fontSize: '.6rem', color: T.muted, fontStyle: 'italic' }}>Empty</span>
+        )}
+      </div>
+    </div>
+
+    {/* dice roll */}
+    <AnimatePresence>
+      {gameData.dice_roll > 0 && (
+        <motion.div
+          initial={{ opacity: 0, scale: .9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0 }}
+          style={{ border: `1px solid ${T.border}`, padding: '.8rem', textAlign: 'center', background: T.impDim }}
         >
-          {/* name */}
-          <div>
-            <div style={{ fontSize: '.6rem', letterSpacing: '.3em', textTransform: 'uppercase', color: T.muted, display: 'flex', alignItems: 'center', gap: '.4rem', marginBottom: '.5rem' }}>
-              <span style={{ display: 'inline-block', width: '1rem', height: 1, background: T.imp }} />
-              Character
-            </div>
-            <div style={{ fontFamily: T.fh, fontSize: '1.5rem', letterSpacing: '.08em', lineHeight: 1 }}>{ps.name || 'Hero'}</div>
-            <div style={{ fontSize: '.55rem', letterSpacing: '.18em', textTransform: 'uppercase', color: T.muted, marginTop: 2 }}>Level {ps.level}</div>
+          <motion.div
+            key={gameData.dice_roll}
+            initial={{ rotate: 0, scale: 1 }}
+            animate={{ rotate: [0, 180, 360], scale: [1, 1.3, 1] }}
+            transition={{ duration: .6 }}
+            style={{ fontFamily: T.fh, fontSize: '3rem', color: T.imp, lineHeight: 1 }}
+          >
+            {gameData.dice_roll}
+          </motion.div>
+          <div style={{
+            fontSize: '.55rem',
+            letterSpacing: '.2em',
+            textTransform: 'uppercase',
+            marginTop: 4,
+            color: gameData.outcome === 'success' ? T.success : T.imp,
+          }}>
+            {gameData.outcome === 'success' ? 'Success' : 'Failure'}
           </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
 
-          {/* vitals */}
-          <div>
-            <div style={{ fontSize: '.6rem', letterSpacing: '.3em', textTransform: 'uppercase', color: T.muted, display: 'flex', alignItems: 'center', gap: '.4rem', marginBottom: '.5rem' }}>
-              <span style={{ display: 'inline-block', width: '1rem', height: 1, background: T.imp }} />
-              Vitals
-            </div>
-            <ResourceBar label="Health"  current={ps.hp}      max={ps.max_hp}      color={T.imp}    />
-            <ResourceBar label="Mana"    current={ps.mana}    max={ps.max_mana}    color={T.blue}   />
-            <ResourceBar label="Stamina" current={ps.stamina} max={ps.max_stamina} color={T.orange} />
-          </div>
-
-          {/* XP */}
-          <div style={{ border: `1px solid rgba(255,184,48,.2)`, padding: '.7rem', background: 'rgba(255,184,48,.04)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '.4rem' }}>
-              <span style={{ fontFamily: T.fh, fontSize: '1.2rem', letterSpacing: '.08em', color: T.gold }}>LV.{ps.level}</span>
-              <span style={{ fontSize: '.55rem', letterSpacing: '.12em', color: 'rgba(255,184,48,.6)' }}>{ps.xp} / {ps.xp_to_next}</span>
-            </div>
-            <div style={{ height: 5, background: 'rgba(255,255,255,.06)' }}>
-              <motion.div initial={{ width: 0 }} animate={{ width: `${xpPct}%` }} transition={{ duration: .5 }} style={{ height: '100%', background: T.gold }} />
-            </div>
-          </div>
-
-          {/* inventory */}
-          <div>
-            <div style={{ fontSize: '.6rem', letterSpacing: '.3em', textTransform: 'uppercase', color: T.muted, display: 'flex', alignItems: 'center', gap: '.4rem', marginBottom: '.5rem' }}>
-              <span style={{ display: 'inline-block', width: '1rem', height: 1, background: T.imp }} />
-              Inventory
-            </div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, minHeight: 40 }}>
-              {ps.inventory?.length > 0 ? ps.inventory.map((item, i) => (
-                <span
-                  key={i}
-                  className="gs-inv-item"
-                  style={{ fontSize: '.55rem', letterSpacing: '.1em', textTransform: 'uppercase', padding: '3px 7px', border: `1px solid ${T.border}`, color: T.muted, transition: 'all .15s', cursor: 'default' }}
-                >
-                  {item}
-                </span>
-              )) : (
-                <span style={{ fontSize: '.6rem', color: T.muted, fontStyle: 'italic' }}>Empty</span>
-              )}
-            </div>
-          </div>
-
-          {/* dice roll */}
-          <AnimatePresence>
-            {gameData.dice_roll > 0 && (
-              <motion.div
-                initial={{ opacity: 0, scale: .9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0 }}
-                style={{ border: `1px solid ${T.border}`, padding: '.8rem', textAlign: 'center', background: T.impDim }}
-              >
-                <motion.div
-                  key={gameData.dice_roll}
-                  initial={{ rotate: 0, scale: 1 }}
-                  animate={{ rotate: [0, 180, 360], scale: [1, 1.3, 1] }}
-                  transition={{ duration: .6 }}
-                  style={{ fontFamily: T.fh, fontSize: '3rem', color: T.imp, lineHeight: 1 }}
-                >
-                  {gameData.dice_roll}
-                </motion.div>
-                <div style={{
-                  fontSize: '.55rem', letterSpacing: '.2em', textTransform: 'uppercase', marginTop: 4,
-                  color: gameData.outcome === 'success' ? '#4ade80' : T.imp,
-                }}>
-                  {gameData.outcome === 'success' ? 'Success' : 'Failure'}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.aside>
+  </motion.aside>
 
         {/* ── MAIN ── */}
         <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -356,29 +426,35 @@ function GameScreen({ sessionId, initialGameData, onCombatStart }) {
           </motion.div>
 
           {/* combat trigger */}
-          <button
-            className="gs-combat-btn"
-            onClick={handleStartCombat}
-            style={{
-              margin: '1rem 1.5rem',
-              padding: '.8rem 1.5rem',
-              fontFamily: T.fh,
-              fontSize: '1rem',
-              letterSpacing: '.12em',
-              border: `1px solid ${T.border}`,
-              color: T.imp,
-              background: T.impDim,
-              cursor: 'crosshair',
-              width: 'calc(100% - 3rem)',
-              transition: 'all .15s',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '.5rem',
-            }}
-          >
-            ⚔ INITIATE COMBAT — Test Encounter
-          </button>
+<button
+  className="gs-combat-btn"
+  onClick={handleStartCombat}
+  style={{
+    margin: '1rem 1.5rem',
+    padding: '1rem 1.5rem',
+    fontFamily: T.fh,
+    fontSize: '1rem',
+    letterSpacing: '.12em',
+border: `1px solid ${T.cream}`,
+color: T.night,
+background: T.cream,
+    cursor: 'pointer',
+    width: 'calc(100% - 3rem)',
+    transition: 'all .2s ease',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '.5rem',
+    position: 'relative',
+    overflow: 'hidden',
+    clipPath: 'polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px))',
+boxShadow: `4px 4px 0px rgba(0,0,0,0.5), 0 0 20px rgba(232,224,208,0.2)`,
+  }}
+>
+  <span className="gs-combat-shimmer" />
+  <Sword size={15} />
+  INITIATE COMBAT — Test Encounter
+</button>
 
         </div>
       </div>

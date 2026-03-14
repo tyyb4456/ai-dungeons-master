@@ -60,6 +60,28 @@ function ErrorMessage({ error, onRetry }) {
         .em-retry:hover .em-retry-icon {
           animation: em-spin 0.5s ease-out forwards;
         }
+
+.em-retry:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px rgba(0,0,0,0.6), 0 0 30px rgba(251,54,64,0.45) !important;
+}
+.em-retry:active {
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0px rgba(0,0,0,0.4) !important;
+}
+.em-retry-shimmer {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.25), transparent);
+  transition: left 0.5s ease;
+  pointer-events: none;
+}
+.em-retry:hover .em-retry-shimmer {
+  left: 150%;
+}
       `}</style>
 
       {/* Scanline */}
@@ -170,27 +192,32 @@ function ErrorMessage({ error, onRetry }) {
 
           {/* Retry */}
           {onRetry && (
-            <button
-              onClick={onRetry}
-              className="em-retry"
-              style={{
-                fontFamily: "'Bebas Neue', sans-serif",
-                fontSize: '1rem',
-                letterSpacing: '.15em',
-                padding: '.8rem 2.5rem',
-                border: '1px solid #FB3640',
-                background: '#FB3640',
-                color: '#000F08',
-                cursor: 'crosshair',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '.5rem',
-                transition: 'background .15s, color .15s, box-shadow .15s',
-              }}
-            >
-              <RotateCcw size={16} strokeWidth={2} className="em-retry-icon" />
-              TRY AGAIN
-            </button>
+  <button
+  onClick={onRetry}
+  className="em-retry"
+  style={{
+    fontFamily: "'Bebas Neue', sans-serif",
+    fontSize: '1rem',
+    letterSpacing: '.15em',
+    padding: '1rem 2.5rem',
+    border: '1px solid #FB3640',
+    background: '#FB3640',
+    color: '#000F08',
+    cursor: 'pointer',
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '.5rem',
+    transition: 'all .2s ease',
+    position: 'relative',
+    overflow: 'hidden',
+    clipPath: 'polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px))',
+    boxShadow: '4px 4px 0px rgba(0,0,0,0.5), 0 0 20px rgba(251,54,64,0.2)',
+  }}
+>
+  <span className="em-retry-shimmer" />
+  <RotateCcw size={16} strokeWidth={2} />
+  TRY AGAIN
+</button>
           )}
 
         </div>
