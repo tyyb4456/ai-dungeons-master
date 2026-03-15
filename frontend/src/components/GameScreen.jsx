@@ -69,6 +69,8 @@ function GameScreen({ sessionId, initialGameData, onCombatStart }) {
   const [gameData, setGameData] = useState(initialGameData);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError]         = useState(null);
+  const [combatLoading, setCombatLoading] = useState(false);
+
 
   const handleAction = async (action) => {
     setIsLoading(true);
@@ -96,12 +98,15 @@ function GameScreen({ sessionId, initialGameData, onCombatStart }) {
   };
 
   const handleStartCombat = async () => {
+    setCombatLoading(true);
+    setError(null);
     try {
       await gameApi.startCombat(sessionId, 'random', 1, 1);
       onCombatStart();
       navigate('/combat');
     } catch (err) {
       setError('Failed to start combat');
+      setCombatLoading(false); // only reset on error, not finally
     }
   };
 
@@ -429,16 +434,17 @@ function GameScreen({ sessionId, initialGameData, onCombatStart }) {
 <button
   className="gs-combat-btn"
   onClick={handleStartCombat}
+  disabled={combatLoading}
   style={{
     margin: '1rem 1.5rem',
     padding: '1rem 1.5rem',
     fontFamily: T.fh,
     fontSize: '1rem',
     letterSpacing: '.12em',
-border: `1px solid ${T.cream}`,
-color: T.night,
-background: T.cream,
-    cursor: 'pointer',
+    border: `1px solid ${combatLoading ? T.imp : T.cream}`,
+    color: combatLoading ? T.cream : T.night,
+    background: combatLoading ? 'rgba(251,54,64,.15)' : T.cream,
+    cursor: combatLoading ? 'wait' : 'pointer',
     width: 'calc(100% - 3rem)',
     transition: 'all .2s ease',
     display: 'flex',
@@ -447,13 +453,17 @@ background: T.cream,
     gap: '.5rem',
     position: 'relative',
     overflow: 'hidden',
+    opacity: combatLoading ? 0.8 : 1,
     clipPath: 'polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px))',
-boxShadow: `4px 4px 0px rgba(0,0,0,0.5), 0 0 20px rgba(232,224,208,0.2)`,
+    boxShadow: `4px 4px 0px rgba(0,0,0,0.5), 0 0 20px rgba(232,224,208,0.2)`,
   }}
 >
   <span className="gs-combat-shimmer" />
-  <Sword size={15} />
-  INITIATE COMBAT — Test Encounter
+  {combatLoading
+    ? <div style={{ width: 14, height: 14, border: '1.5px solid rgba(251,54,64,.3)', borderTopColor: T.imp, borderRadius: '50%', animation: 'gs-spin .7s linear infinite', flexShrink: 0 }} />
+    : <Sword size={15} />
+  }
+  {combatLoading ? 'ENTERING COMBAT...' : 'INITIATE COMBAT — Test Encounter'}
 </button>
 
         </div>
