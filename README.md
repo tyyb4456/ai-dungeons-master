@@ -1,6 +1,4 @@
-<h1 style="font-family:'Space Mono', monospace;">
-AI Dungeon Master
-</h1>
+# **AI Dungeon Master**
 
 > An AI-powered text RPG with dynamic storytelling, turn-based combat, and persistent character progression — built with a React frontend and a Python/FastAPI backend.
 
