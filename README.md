@@ -1,4 +1,4 @@
-# ⚔️ AI Dungeon Master
+# AI Dungeon Master
 
 > An AI-powered text RPG with dynamic storytelling, turn-based combat, and persistent character progression — built with a React frontend and a Python/FastAPI backend.
 
